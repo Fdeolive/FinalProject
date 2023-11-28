@@ -1,0 +1,24 @@
+CRN,classCode,maxEnrollment,enrollment,courseTitle,courseSection,weekDays,startTime,endTime
+95302,CS1080,40,31,Intro to Website Development,A,MWF,08:30:00,09:20:00
+95303,CS1080,40,34,Intro to Website Development,B,MWF,10:50:00,11:40:00
+95304,CS1080,40,32,Intro to Website Development,C,MWF,12:00:00,12:50:00
+95305,CS1210,50,48,Computer Programming I,A,MWF,12:00:00,12:50:00
+95306,CS1210,50,48,Computer Programming I,B,TTh,10:05:00,11:20:00
+95307,CS1210,50,46,Computer Programming I,C,TTh,01:15:00,02:30:00
+95308,CS1640,45,36,Discrete Structures,A,MWF,09:40:00,10:30:00
+95309,CS1640,45,39,Discrete Structures,B,MWF,12:00:00,12:50:00
+95310,CS1640,45,41,Discrete Structures,C,TTh,10:05:00,11:20:00
+95311,CS2100,45,41,Intermediate Programming,A,MWF,01:10:00,02:00:00
+95312,CS2100,45,40,Intermediate Programming,B,MWF,02:20:00,03:10:00
+95313,CS2100,45,44,Intermediate Programming,C,MWF,09:40:00,10:30:00
+95314,CS2210,40,36,Computer Organization,A,MWF,09:40:00,10:30:00
+95315,CS2210,40,36,Computer Organization,B,MWF,10:50:00,11:40:00
+95316,CS2240,45,39,Data Structures and Algorithms,A,MWF,09:40:00,10:30:00
+95317,CS2240,45,36,Data Structures and Algorithms,B,MWF,03:30:00,04:20:00
+95318,CS2240,45,41,Data Structures and Algorithms,C,MWF,12:00:00,12:50:00
+95319,CS2250,45,31,Computability and Complexity,A,TTh,08:30:00,09:45:00
+95320,CS2250,45,45,Computability and Complexity,B,TTh,02:50:00,04:05:00
+95321,CS2300,50,48,Advanced Programming,A,TTh,10:05:00,11:20:00
+95322,CS2300,50,49,Advanced Programming,B,TTh,04:25:00,05:40:00
+95323,CS3010,40,36,Operating Systems,A,MWF,02:20:00,03:10:00
+95324,CS3010,40,38,Operating Systems,B,MWF,01:10:00,02:00:00
