@@ -1,0 +1,71 @@
+:root {
+    --main-bg-color: #9BD5F0;
+    --main-bg-color-rgba: rgba(130, 166, 217, 0.8);
+    --nav-bg-color-rgba: rgba(149,165,248,.8);
+    --main-text-color: #111111;
+    --nav-bg-color-hover: #95F8E2;
+    
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family:'Times New Roman', Times, serif;
+    line-height: 1.3em;
+}
+
+html {
+    background-color: var(--main-bg-color);
+}
+h1 {
+
+    font-size:5em;
+    font-family: trebuchet ms;
+    font-weight: bold;
+    margin-bottom:-3em;
+    margin-top: 1em;
+   
+}
+body {
+    margin: auto;
+    max-width:75ch;
+}
+
+fieldset {
+    border-radius: 20px;
+    margin-top:20em;
+    min-height:11em;
+    min-width:25em;
+    background-color: #a3cfde;
+    border-style:double;
+}
+legend {
+    text-align: center;
+    font-weight: bold;
+}
+label[for^="txt"] {
+    margin-top:1em;
+    display:block;
+    text-align:center;
+    
+}
+input[type="text"] {
+    margin-left:10em;
+    margin-right:10em;
+}
+input[type="password"] {
+    margin-left:10em;
+    margin-right:10em;
+}
+input[type="submit"] {
+    margin-left: 25em;
+    min-height: 2em;
+    min-width: 4em;
+    background-color: #48b4d7;
+    border-radius: 5px;
+    border-style:solid;
+    border-color: grey;
+}
+input[type="submit"]:hover {
+    background-color: #2e6778;
+}

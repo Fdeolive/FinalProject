@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head> 
+    <meta charset="utf-8">
+    <title>Course Selector</title>
+    <meta name="author" content="Felix Walberg and Fernanda De Oliveira Girelli">
+    <meta name="description" content="A site for users to sign in with netid and access course schedule or modify courses">
+    <link rel="stylesheet" href="css/custom.css?version=<?php print time(); ?>" type="text/css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/custom.css?version=<?php print time(); ?>" type="text/css">
+    <link rel="stylesheet" href="css/layout-desktop.css?version=<?php print time(); ?>" type="text/css">
+
+</head>
+<body class="login">
+    <header></header>
+    <nav></nav>
+    <main>
+        <section>
+            <h1>Course Selector</h1>
+        </section>
+        <section>
+        <form action="#" method="POST">
+                <fieldset>
+                    <legend>Login</legend>
+                    
+                    <p>
+                        <label for="txtUsername">Username</label>
+                        <input type="text" name="txtUsername" id="txtUsername" placeholder="Enter your netid">
+                    </p>
+
+                    <p>
+                        <label for="txtPassword">Password</label>
+                        <input type="password" name="txtPassword" id="txtPassword" placeholder="Enter your password">
+                    </p>
+                    <p>
+                        <input type="submit" name="btnSubmit">
+                     </p>
+                    
+                </fieldset>
+
+        
+
+                
+            </form>
+        </section>
+    </main>
+</body>
