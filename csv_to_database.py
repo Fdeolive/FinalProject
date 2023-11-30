@@ -17,19 +17,20 @@ cur.execute("DROP TABLE IF EXISTS people;")
 
 
 # create a table for courses csv
-cur.execute('''CREATE TABLE courses(CRN INTEGER, classCode TEXT, maxEnrollment INTEGER, enrollment INTEGER, courseTitle TEXT, courseSection TEXT, weekDays TEXT, startTime TIME, endTime TIME)''')
+cur.execute('''CREATE TABLE courses(CRN INTEGER, classCode TEXT, maxEnrollment INTEGER, enrollment INTEGER, courseTitle TEXT, courseSection TEXT, weekDays TEXT, startTime TIME, endTime TIME, profid TEXT)''')
 
 # open file and add contents into table
 file = open('courses.csv')
 contents = csv.reader(file)
 headers = next(contents)
 
-insert_records = '''INSERT INTO courses('CRN','classCode','maxEnrollment','enrollment','courseTitle','courseSection','weekDays','startTime','endTime') VALUES(?,?,?,?,?,?,?,?,?)'''
+insert_records = '''INSERT INTO courses('CRN','classCode','maxEnrollment','enrollment','courseTitle','courseSection','weekDays','startTime','endTime','profid') VALUES(?,?,?,?,?,?,?,?,?,?)'''
 for row in contents:
     if row!= []:
         cur.execute(insert_records,row)
 # close the file
 file.close()
+conn.commit()
 
 # TODO: UPDATE FOR RELEVANT TABLES 
 # create a table for users csv
@@ -49,6 +50,7 @@ for row in contents:
         cur.execute(insert_records, row)
 # close the file
 file.close()
+conn.commit()
 
 # create a table for people csv
 cur.execute('''CREATE TABLE people(firstName TEXT, lastName TEXT, netid TEXT, hold TEXT, type TEXT, rating FLOAT, gpa FLOAT)''')
@@ -66,7 +68,22 @@ for row in contents:
         cur.execute(insert_records, row)
 # close the file
 file.close()
+conn.commit()
 
+# create a table for enrollment csv
+cur.execute('''CREATE TABLE enrollment(CRN TEXT, netid TEXT)''')
+
+# open file and add contents into table
+file = open('enrollment.csv')
+contents = csv.reader(file)
+headers = next(contents)
+
+insert_records = '''INSERT INTO enrollment('CRN','netid') VALUES(?,?)'''
+for row in contents:
+    if row != []:
+        cur.execute(insert_records, row)
+# close the file
+file.close()
 conn.commit()
 
 #let's check what's in there
