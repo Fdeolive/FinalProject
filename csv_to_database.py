@@ -51,7 +51,7 @@ for row in contents:
 file.close()
 
 # create a table for people csv
-cur.execute('''CREATE TABLE people(firstName TEXT, lastName TEXT, netid TEXT, hold TEXT, type TEXT)''')
+cur.execute('''CREATE TABLE people(firstName TEXT, lastName TEXT, netid TEXT, hold TEXT, type TEXT, rating FLOAT, gpa FLOAT)''')
 
 # for people data, we used randomly generated names from this source:
 # https://www.behindthename.com/random/random.php?gender=both&number=2&sets=1&surname=&norare=yes&usage_eng=1
@@ -60,42 +60,12 @@ file = open('people.csv')
 contents = csv.reader(file)
 headers = next(contents)
 
-insert_records = '''INSERT INTO people('firstName','lastName','netid','hold','type') VALUES(?,?,?,?,?)'''
+insert_records = '''INSERT INTO people('firstName','lastName','netid','hold','type','rating','gpa') VALUES(?,?,?,?,?,?,?)'''
 for row in contents:
     if row != []:
         cur.execute(insert_records, row)
 # close the file
 file.close()
-
-# #create a table for posts csv
-# cur.execute('''CREATE TABLE posts(user_id INTEGER, post TEXT, posted_date TEXT)''')
-
-# # open file and add contents into table
-# file = open('posts.csv')
-# contents = csv.reader(file)
-# headers = next(contents)
-
-# insert_records = '''INSERT INTO posts('user_id','post','posted_date') VALUES(?,?,?)'''
-# for row in contents:
-#     if row!= []:
-#         cur.execute(insert_records,row)
-# # close the file
-# file.close()
-
-# #create a table for users csv
-# cur.execute('''CREATE TABLE users(user_id INTEGER, email_id TEXT, username TEXT, password TEXT, account_created TEXT, first_name TEXT, last_name TEXT)''')
-
-# # open file and add contents into table
-# file = open('users.csv')
-# contents = csv.reader(file)
-# headers = next(contents)
-
-# insert_records = '''INSERT INTO users('user_id','email_id','username','password','account_created','first_name','last_name') VALUES(?,?,?,?,?,?,?)'''
-# for row in contents:
-#     if row!= []:
-#         cur.execute(insert_records,row)
-# # close the file
-# file.close()
 
 conn.commit()
 
