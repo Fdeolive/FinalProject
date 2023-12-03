@@ -1,0 +1,52 @@
+{% extends "basisAdmin.html"%}
+{%block title%}Add Courses{%endblock%}
+{%block name%}Add Courses{%endblock%}
+{%block content%}
+
+<form>
+    <div class="mb-3">
+      <label for="courseTitle" class="form-label">Course Name</label>
+      <input type="text" class="form-control" id="courseTitle" required >
+    </div>
+    <div class="mb-3">
+        <label for="CRN" class="form-label">CRN</label>
+        <input type="text" class="form-control" id="CRN" required>
+      </div>
+      <div class="mb-3">
+        <label for="maxEnrollment" class="form-label">Max Enrollment</label>
+        <input type="text" class="form-control" id="maxEnrollment" required >
+      </div>
+      <div class="mb-3">
+        <label for="classCode" class="form-label">Class Code</label>
+        <input type="text" class="form-control" id="classCode" required>
+      </div>
+      <div class="mb-3">
+        <label for="section" class="form-label">Section A-Z</label>
+        <input type="text" class="form-control" id="section" required >
+      </div>
+      <!-- Make this drop dpwn for MWF,TT -->
+      <div class="mb-3">
+        <label for="weekDay" class="form-label">Week Day</label>
+        <select id="weekDay" class="form-select" required>
+            <option>Week of Day</option>
+            <option>Monday,Wednesday,Friday</option>
+            <option>Tuesday,Thursday</option>
+        </select>
+      </div>
+      <!--  -->
+      <div class="mb-3">
+        <label for="startTime" class="form-label">Start Time</label>
+        <input type="text" class="form-control" id="startTime" required>
+      </div>
+      <!--  -->
+      <div class="mb-3">
+        <label for="endTime" class="form-label">End Time</label>
+        <input type="text" class="form-control" id="endTime" required >
+      </div>
+      <div class="mb-3">
+        <label for="profid" class="form-label">Professor</label>
+        <input type="text" class="form-control" id="profid" required>
+      </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+  {%endblock%}
