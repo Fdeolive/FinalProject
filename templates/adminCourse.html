@@ -1,0 +1,25 @@
+{% extends "basisAdmin.html"%}
+{%block title%}Edit Courses{%endblock%}
+{%block name%}Edit Courses{%endblock%}
+{%block content%}
+<table>
+    <tr>
+        <th>Courses</th>
+    </tr>
+    {% for i in course %}
+        <tr>
+            <td>{{ i.CRN }}</td>
+            <td>{{ i.courseTitle }}</td>
+            
+            <td>
+                <a href="/adminINFO/{{i.CRN}}">Info</a>
+                <br>
+                <a href="/adminEDIT/{{i.CRN}}">Update</a>
+                <br>
+                <a href="/adminREMOVE/{{i.CRN}}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+</table>
+</div>
+{%endblock%}

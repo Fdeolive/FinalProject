@@ -10,8 +10,6 @@ app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///CS2990_Final_Project.db'
 
 db=SQLAlchemy(app)
 
-
-
 ##Model 
 class users(db.Model):
     netid=db.Column(db.String(200),primary_key=True)
@@ -86,60 +84,94 @@ def admin(name):
     return render_template("admin.html",name=name)
 
 #Admin edit of student
-@app.route("/adminStudent")
-def adminStudent():
+@app.route("/adminStudentInfo")
+def adminStudentInfo():
+    return render_template("adminStudent.html")
+
+@app.route("/adminStudentEdit")
+def adminStudentEdit():
     return render_template("adminStudent.html")
 
 ##Admin Add Course
-##Currently trying to get the form to commit
 @app.route("/adminADD",methods=['POST','GET'])
 def adminADD():
-    ##FIX THIS SO ITS POST AND NOT GET
-    if request.method=='GET':
+    
+    if request.method=='POST':
         
-        # courseTitle=request.form["courseTitle"]
-        # CRN=request.form["CRN"]
+        ##Get from the form
+        courseTitle=request.form["courseTitle"]
+        CRN=request.form["CRN"]
+        classCode=request.form["classCode"]
+        maxE=request.form["maxEnrollment"]
+        courseSection=request.form["courseSection"]
+        weekDay=request.form["weekDay"]
+        startTime=request.form["startTime"]
+        endTime=request.form["endTime"]
+        profid=request.form["profid"]
 
-    #     classCode=request.form["classCode"]
-    #     maxE=request.form["maxEnrollment"]
-    #     ##Set to zero on default
-    #    ## enroll=request.form["enrollment"]
-        
-        
-    #     courseSection=request.form["courseSection"]
-    #     weekDay=request.form["weekDay"]
-    #     startTime=request.form["startTime"]
-    #     endTime=request.form["endTime"]
-    #     profid=request.form["profid"]
 
-    #     newCOURSE=(CRN,classCode,maxE,0,courseTitle,courseSection,weekDay,startTime,endTime,profid)
-        newCOURSE=courses(CRN="0",classCode="0",maxEnrollment="0",enrollment="0",courseTitle="0",courseSection="0",weekDays="0",startTime="0",endTime="0",profid="0")
+        ##Adds to the database 
+        newCOURSE=courses(CRN=CRN,classCode=classCode,maxEnrollment=maxE,enrollment="0",courseTitle=courseTitle,courseSection=courseSection,weekDays=weekDay,startTime=startTime,endTime=endTime,profid=profid)
         db.session.add(newCOURSE)
         db.session.commit()
         return render_template("addCourses.html")
-        
-
     else:
         return render_template("addCourses.html")
 
 
-
-
-
-
-
-
+##Displays all the course
+@app.route("/adminCourses")
+def adminCourse():
+    course = courses.query.all()
+    return render_template('adminCourse.html', course=course)
 
 
 ##Admin edit course
-@app.route("/adminEDIT")
-def adminEDIT():
-    return render_template("adminEdit.html")
+@app.route("/adminEDIT/<CRN>")
+def adminEDIT(CRN):
+    course = courses.query.get_or_404(CRN)
+
+    #Gets the info from the selected course
+    if request.method == 'POST':
+        course.courseTitle=request.form["courseTitle"]
+        course.CRN=course.CRN
+        course.enrollment=course.enrollment
+        course.classCode=request.form["classCode"]
+        course.maxE=request.form["maxEnrollment"]
+        course.courseSection=request.form["courseSection"]
+        course.weekDay=request.form["weekDay"]
+        course.startTime=request.form["startTime"]
+        course.endTime=request.form["endTime"]
+        course.profid=request.form["profid"]
+
+        try:
+            db.session.commit()
+            return redirect(url_for('adminCourses'))
+        
+        except:
+            return 'There was an issue updating your course'
+
+    else:
+        return render_template('adminEDIT.html', course=course)
+
+
+        
+
+
+    
 
 ##Remove course
-@app.route("/adminREMOVE")
-def adminREMOVE():
-    return render_template("removeCourses.html")
+##Need to add like if more less than 1/3 then can't remove
+@app.route("/adminREMOVE/<CRN>")
+def adminREMOVE(CRN):
+    classes = courses.query.get_or_404(CRN)
+
+    try:
+        db.session.delete(classes)
+        db.session.commit()
+        return render_template('adminCourse.html')
+    except:
+        return 'There was a problem deleting that course'
 
 ##Info On courses
 @app.route("/adminINFO")
