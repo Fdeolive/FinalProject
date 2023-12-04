@@ -3,10 +3,16 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 ##STILL TO DO:
 ###GEt the home nav to work 
+######Get the student home page to join the course table 
 ###Add the info page on student and admin
+###This is where all the stuff are going to be
+######Need to include graphs
+##Do CSS
+####Include logout button
+
+
 ##Creating the flask 
 app=Flask(__name__)
-
 ##Adding the database
 app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///CS2990_Final_Project.db'
 
@@ -48,13 +54,10 @@ class courses(db.Model):
         return '<CRN %r>' % self.CRN
 
 class enrollment(db.Model):
+   #  ID=db.Column(db.Integer,primary_key=True)
      CRN=db.Column(db.String(200),primary_key=True)
      netid=db.Column(db.String(200),primary_key=True)
 
-     ##THE primary key is the combination of both CRN and netid
-     __table_args__ = (
-        db.PrimaryKeyConstraint('CRN', 'netid'),
-    )
 
      def __repr__(self):
         return '<CRN %r>' % self.CRN
@@ -76,7 +79,7 @@ def login():
              if peopType=="A":
                 return redirect(url_for("admin",name=peop.firstName))
              else:
-                 return redirect(url_for("student",name=peop.firstName,netid=user))
+                 return redirect(url_for("student",netid=user))
            
 
         else:
@@ -88,13 +91,26 @@ def login():
         return render_template("login.html")
    
 
-################################## STUDENT PAGE##############################
+########################################### STUDENT PAGE################################################
 
 ##potentially do credits
-@app.route("/student/<name><netid>")
-def student(name,netid):
-    course = enrollment.query.filter_by(netid=netid).all()
-    return render_template("student.html",name=name,netid=netid,course=course)
+@app.route("/student/<netid>")
+def student(netid):
+    ##Getting all the courses enrolled in
+   # coursesEnrolled = enrollment.query.filter_by(netid=netid).all()
+
+    ##Select * from courses join enrollment on crn where netid=netid
+    ##Getting the CRN for the courses enrolled in
+
+
+    #result = courses.query.join(enrollment).filter(courses.CRN == enrollment.CRN).all()
+   # result = db.session.query(courses,enrollment).left_join(enrollment).filter_by(courses.CRN == enrollment.CRN).filter_by(netid=netid).all()
+    #result = db.session.query(courses,enrollment).select_from(courses).join(enrollment).filter_by(netid=netid).all()
+   # result=db.select_from(db.join(courses, enrollment, isouter=True))
+   results = db.session.query(courses,enrollment).join(courses, courses.CRN == enroll.CRN, isouter=False).filter_by(netid=netid).all()
+   # Iterate results and do stuff
+    #courseInfo=courses.query(CRN)
+   return render_template("student.html",netid=netid,results=results)
 
 @app.route("/studentCourseEDIT")
 def studentCourseEDIT():
@@ -105,7 +121,7 @@ def studentCourseINFO():
     return render_template("studentCourseINFO.html")
 
 
-################################ADMIN PAGE######################
+################################ADMIN PAGE#####################################################
 @app.route("/admin/<name>")
 def admin(name):
     return render_template("admin.html",name=name)

@@ -1,16 +1,16 @@
 {% extends "basisStudent.html"%}
 {%block title%}Home Page{%endblock%}
 {%block name%}Home Page{%endblock%}
-{%block content%}<h2>Welcome {{name}}!</h2>
-<!-- <h2>Welcome {{netid}}!</h2> -->
+{%block content%}<h2>Welcome {{netid}}!</h2>
 
 <table>
     <tr>
-        <th>Courses</th>
+        <th>Current Courses</th>
     </tr>
-    {% for i in course %}
+    {% for i in results %}
         <tr>
             <td>{{ i.CRN }}</td>
+            <td>{{ i.courseTitle }}</td>
         </tr>
         {% endfor %}
 </table>{%endblock%}
