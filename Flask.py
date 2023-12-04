@@ -3,12 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 ##STILL TO DO:
 ###GEt the home nav to work 
-######Get the student home page to join the course table 
 ###Add the info page on student and admin
-###This is where all the stuff are going to be
 ######Need to include graphs
 ##Do CSS
-####Include logout button
 
 
 ##Creating the flask 
@@ -92,36 +89,43 @@ def login():
    
 
 ########################################### STUDENT PAGE################################################
-
-##potentially do credits
+##Student section will be find job that so and so
 @app.route("/student/<netid>")
 def student(netid):
     ##Getting all the courses enrolled in
-   # coursesEnrolled = enrollment.query.filter_by(netid=netid).all()
+   if(request.method=='POST'):
+       newCode=request.form["newCourse"]
+       newCourse=enrollment(netid,CRN=newCode)
+       db.session.add(newCourse)
+       db.session.commit()
+       results = db.session.query(courses.CRN,courses.courseTitle).join(enrollment, enrollment.CRN == courses.CRN, isouter=False).filter_by(netid=netid).all()
+       return render_template("student.html",netid=netid,results=results)
+   else:
+    results = db.session.query(courses.CRN,courses.courseTitle).join(enrollment, enrollment.CRN == courses.CRN, isouter=False).filter_by(netid=netid).all()
+    return render_template("student.html",netid=netid,results=results)
 
-    ##Select * from courses join enrollment on crn where netid=netid
-    ##Getting the CRN for the courses enrolled in
+# @app.route("/studentCourseEDIT")
+# def studentCourseEDIT():
+#     return render_template("studentCourseEDIT.html")
 
-
-    #result = courses.query.join(enrollment).filter(courses.CRN == enrollment.CRN).all()
-   # result = db.session.query(courses,enrollment).left_join(enrollment).filter_by(courses.CRN == enrollment.CRN).filter_by(netid=netid).all()
-    #result = db.session.query(courses,enrollment).select_from(courses).join(enrollment).filter_by(netid=netid).all()
-   # result=db.select_from(db.join(courses, enrollment, isouter=True))
-   results = db.session.query(courses,enrollment).join(courses, courses.CRN == enroll.CRN, isouter=False).filter_by(netid=netid).all()
-   # Iterate results and do stuff
-    #courseInfo=courses.query(CRN)
-   return render_template("student.html",netid=netid,results=results)
-
-@app.route("/studentCourseEDIT")
-def studentCourseEDIT():
-    return render_template("studentCourseEDIT.html")
-
+################Students information#############
 @app.route("/studentCourseINFO")
 def studentCourseINFO():
     return render_template("studentCourseINFO.html")
 
+@app.route("/studentCourseREMOVE/<CRN>")
+def studentCourseREMOVE (CRN):
+    enroll = enrollment.query.get_or_404(CRN)
+    try:
+        db.session.delete(enroll)
+        db.session.commit()
+        return render_template('studentCourseEDIT.html')
+    except:
+        return 'There was a problem deleting that course'
+
 
 ################################ADMIN PAGE#####################################################
+##DO math pages like sum of gpa and sum of people in class
 @app.route("/admin/<name>")
 def admin(name):
     return render_template("admin.html",name=name)

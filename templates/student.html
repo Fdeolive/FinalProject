@@ -11,6 +11,20 @@
         <tr>
             <td>{{ i.CRN }}</td>
             <td>{{ i.courseTitle }}</td>
+            <td>
+                <br>
+                <a href="/studentCourseREMOVE/{{i.CRN}}">Delete</a>
+            </td>
         </tr>
         {% endfor %}
-</table>{%endblock%}
+</table>
+
+<div class="form">
+    <form action="/" method="POST">
+        <input type="text" name="newCourse" id="newCourse">
+        <input type="submit" value="Add Course">
+    </form>
+</div>
+</div>
+
+{%endblock%}
