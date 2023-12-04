@@ -1,0 +1,18 @@
+{% extends "basisAdmin.html"%}
+{%block title%}Edit Student{%endblock%}
+{%block name%}Edit Student{%endblock%}
+{%block content%}
+<div class="content">
+    <h1 style="text-align: center">Edit Student</h1>
+
+    <div class="form">
+        <form action="/adminStudentEdit/{{student.netid}}" method="POST">
+            <input type="text" name="firstName" id="firstName" value="{{student.firstName}}">
+            <input type="text" name="lastName" id="lastName" value="{{student.lastName}}">
+            <input type="text" name="hold" id="hold" value="{{student.hold}}">
+            <input type="text" name="gpa" id="gpa" value="{{student.GPA}}">
+            <input type="submit" value="Update">
+        </form>
+    </div>
+</div>
+{%endblock%}

@@ -1,0 +1,16 @@
+{% extends "basisStudent.html"%}
+{%block title%}Home Page{%endblock%}
+{%block name%}Home Page{%endblock%}
+{%block content%}<h2>Welcome {{name}}!</h2>
+<!-- <h2>Welcome {{netid}}!</h2> -->
+
+<table>
+    <tr>
+        <th>Courses</th>
+    </tr>
+    {% for i in course %}
+        <tr>
+            <td>{{ i.CRN }}</td>
+        </tr>
+        {% endfor %}
+</table>{%endblock%}

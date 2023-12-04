@@ -1,3 +1,25 @@
 {% extends "basisAdmin.html"%}
-{%block title%}Student{%endblock%}
-{%block name%}Students{%endblock%}
+{%block title%}Edit Student{%endblock%}
+{%block name%}Edit Student{%endblock%}
+{%block content%}
+<table>
+    <tr>
+        <th>Student</th>
+    </tr>
+    {% for i in student %}
+        <tr>
+            <td>{{ i.firstName }}</td>
+            <td>{{ i.lastName }}</td>
+            <td>{{ i.netid }}</td>
+            <td>
+                <br>
+                <a href="/adminStudentInfo/{{i.netid}}">Info</a>
+                <br>
+                <a href="/adminStudentEdit/{{i.netid}}">Update</a>
+                <br>
+            </td>
+        </tr>
+        {% endfor %}
+</table>
+</div>
+{%endblock%}

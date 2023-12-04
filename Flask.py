@@ -1,7 +1,9 @@
 from flask import Flask,redirect,url_for,render_template,request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
+##STILL TO DO:
+###GEt the home nav to work 
+###Add the info page on student and admin
 ##Creating the flask 
 app=Flask(__name__)
 
@@ -45,8 +47,19 @@ class courses(db.Model):
     def __repr__(self):
         return '<CRN %r>' % self.CRN
 
+class enrollment(db.Model):
+     CRN=db.Column(db.String(200),primary_key=True)
+     netid=db.Column(db.String(200),primary_key=True)
 
-##Need to make this so it redirects to the correct page admin or student
+     ##THE primary key is the combination of both CRN and netid
+     __table_args__ = (
+        db.PrimaryKeyConstraint('CRN', 'netid'),
+    )
+
+     def __repr__(self):
+        return '<CRN %r>' % self.CRN
+    
+
 @app.route("/", methods=['POST','GET'])
 def login():
     if request.method=='POST':
@@ -59,7 +72,11 @@ def login():
         
         if us and us.password==uPassword:
              peop = people.query.filter_by(netid=user).first()
-             return redirect(url_for("admin",name=peop.firstName))
+             peopType=people.query.filter_by(netid=user).with_entities(people.type).scalar()
+             if peopType=="A":
+                return redirect(url_for("admin",name=peop.firstName))
+             else:
+                 return redirect(url_for("student",name=peop.firstName,netid=user))
            
 
         else:
@@ -71,26 +88,60 @@ def login():
         return render_template("login.html")
    
 
+################################## STUDENT PAGE##############################
 
-##Student view page
-@app.route("/student")
-def student():
-    return render_template("student.html")
+##potentially do credits
+@app.route("/student/<name><netid>")
+def student(name,netid):
+    course = enrollment.query.filter_by(netid=netid).all()
+    return render_template("student.html",name=name,netid=netid,course=course)
+
+@app.route("/studentCourseEDIT")
+def studentCourseEDIT():
+    return render_template("studentCourseEDIT.html")
+
+@app.route("/studentCourseINFO")
+def studentCourseINFO():
+    return render_template("studentCourseINFO.html")
 
 
-##Admin Page
+################################ADMIN PAGE######################
 @app.route("/admin/<name>")
 def admin(name):
     return render_template("admin.html",name=name)
+
+
+@app.route("/adminStudent")
+def adminStudent():
+    student = people.query.filter_by(type="S").all()
+    return render_template('adminStudent.html', student=student)
 
 #Admin edit of student
 @app.route("/adminStudentInfo")
 def adminStudentInfo():
     return render_template("adminStudent.html")
 
-@app.route("/adminStudentEdit")
-def adminStudentEdit():
-    return render_template("adminStudent.html")
+
+@app.route("/adminStudentEdit/<netid>")
+def adminStudentEdit(netid):
+    student = people.query.get_or_404(netid)
+
+    #Gets the info from the selected course
+    if request.method == 'POST':
+        student.firstName=request.form["firstName"]
+        student.lastName=request.form["lastName"]
+        student.hold=request.form["hold"]
+        student.GPA=request.form["gpa"]
+
+        try:
+            db.session.commit()
+            return redirect(url_for("adminStudent"))
+        
+        except:
+            return 'There was an issue updating the students information'
+
+    else:
+        return render_template('adminStudentEdit.html', netid=netid)
 
 ##Admin Add Course
 @app.route("/adminADD",methods=['POST','GET'])
@@ -146,7 +197,7 @@ def adminEDIT(CRN):
 
         try:
             db.session.commit()
-            return redirect(url_for('adminCourses'))
+            return redirect(url_for("adminCourse"))
         
         except:
             return 'There was an issue updating your course'
@@ -155,17 +206,11 @@ def adminEDIT(CRN):
         return render_template('adminEDIT.html', course=course)
 
 
-        
-
-
-    
-
 ##Remove course
 ##Need to add like if more less than 1/3 then can't remove
 @app.route("/adminREMOVE/<CRN>")
 def adminREMOVE(CRN):
     classes = courses.query.get_or_404(CRN)
-
     try:
         db.session.delete(classes)
         db.session.commit()
@@ -177,10 +222,6 @@ def adminREMOVE(CRN):
 @app.route("/adminINFO")
 def adminINFO():
     return render_template("infoCourses.html")
-
-
-
-
 
 
 
