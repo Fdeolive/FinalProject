@@ -1,0 +1,18 @@
+{% extends "basisAdmin.html"%}
+{%block title%}Information on Student{%endblock%}
+{%block name%}Information on Student{%endblock%}
+{%block content%}
+<h1>Information on {{student.netid}}</h1>
+<p>Current GPA: {{student.GPA}}</p>
+
+<table>
+    <tr>
+        <th>Current Courses</th>
+    </tr>
+    {% for i in course %}
+        <tr>
+            <td>{{ i.CRN }}</td>
+        </tr>
+        {% endfor %}
+</table>
+{%endblock%}

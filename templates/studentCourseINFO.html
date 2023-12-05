@@ -1,0 +1,56 @@
+{% extends "basisStudent.html"%}
+{%block title%}Course Infoe{%endblock%}
+{%block name%}Course Info{%endblock%}
+{%block content%}
+
+  <form action="#" method="POST">
+    <fieldset>
+        <legend>Queries</legend>
+        <!-- <select class="form-select" aria-label="Default select example" id="content" name="content">
+            <option selected>Select which you would like to query</option>
+            <option value="(courses.maxEnrollment > courses.enrollment)">Still has seats opened</option>
+            <option value="1">(Professor rating<2)</option>
+            <option value="2">(Professor rating<2)</option>
+            <option value="3">(Professor rating<3)</option>
+            <option value="4">(Prof`essor rating<4)</option>
+            <option value="(courses.weekday = MWF)">Monday, Wednesday,Friday</option>
+            <option value="(courses.weekday = TThur)">Tuesday and Thursday </option>
+          </select> -->
+          <label for="content">Choose a query:</label>
+            <select id="content" name="content" form="content">
+                <option value="(courses.maxEnrollment > courses.enrollment)">Still has seats opened</option>
+                <option value="1">(Professor rating<2)</option>
+                <option value="2">(Professor rating<2)</option>
+                <option value="3">(Professor rating<3)</option>
+                <option value="4">(Professor rating<4)</option>
+                <option value="(courses.weekdays == MWF)">Monday, Wednesday,Friday</option>
+                <option value="(courses.weekdays == TTh)">Tuesday and Thursday </option>
+            </select>
+          <input type="submit" name="btnSubmit">
+    </fieldset>
+</form>
+
+<table>
+    <tr>
+        <th>Current Courses</th>
+    </tr>
+    {% for i in classes %}
+        <tr>
+            <td>{{ i.CRN }}</td>
+            <td>{{ i.courseTitle }}</td>
+           
+            <td>{{ i.enrollment }}</td>
+            
+            <td>{{ i.maxEnrollment }}</td>
+            
+            <td>{{ i.weekDays }}</td>
+           
+            <td>{{ i.startTime }}</td>
+            
+            <td>{{ i.endTime }}</td>
+        
+            <td>{{ i.profid }}</td>
+        </tr>
+        {% endfor %}
+</table>
+{%endblock%}

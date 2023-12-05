@@ -109,9 +109,29 @@ def student(netid):
 #     return render_template("studentCourseEDIT.html")
 
 ################Students information#############
-@app.route("/studentCourseINFO")
+@app.route("/studentCourseINFO",methods=['POST','GET'])
 def studentCourseINFO():
-    return render_template("studentCourseINFO.html")
+
+     if (request.method=="POST"):
+        content=request.form.get("content")
+        if (content=='1' or content=='2' or content=='3' or content =='4'):
+            if(content=='1'):
+                classes= db.session.query(people.netid,courses.profid).join(courses, courses.profid == people.netid, isouter=False).filter(people.rating>1).all()
+            if(content=='2'):
+                classes= db.session.query(people.netid,courses.profid).join(courses, courses.profid == people.netid, isouter=False).filter(people.rating>2).all()
+            if(content=='3'):
+                classes= db.session.query(people.netid,courses.profid).join(courses, courses.profid == people.netid, isouter=False).filter(people.rating>3).all()
+            if(content=='3.5'):
+                classes= db.session.query(people.netid,courses.profid).join(courses, courses.profid == people.netid, isouter=False).filter(people.rating>2).all()
+        else:
+            classes = courses.query.filter(content)
+        return render_template("studentCourseINFO.html",classes=classes)
+    #     ##select --- where ---- is ----------
+    #     ##select courseCRN, courseTitle,courseSection, maxEnrollment, enrollment, weekday, starttime, endTime, profid where (max>enrollment)(rating<5)(rating<3)(rating<4)(rating<3.5)(weekday=MWF)(weekday=TThur)
+     else: 
+    #     #do like select all   
+        classes = courses.query.all()
+        return render_template("studentCourseINFO.html",classes=classes)
 
 @app.route("/studentCourseREMOVE/<CRN>")
 def studentCourseREMOVE (CRN):
@@ -122,6 +142,7 @@ def studentCourseREMOVE (CRN):
         return render_template('studentCourseEDIT.html')
     except:
         return 'There was a problem deleting that course'
+    
 
 
 ################################ADMIN PAGE#####################################################
@@ -137,16 +158,20 @@ def adminStudent():
     return render_template('adminStudent.html', student=student)
 
 #Admin edit of student
-@app.route("/adminStudentInfo")
-def adminStudentInfo():
-    return render_template("adminStudent.html")
+@app.route("/adminStudentINFO/<netid>")
+def adminStudentInfo(netid):
+    student = people.query.get_or_404(netid)
+    # if request.method=='POST':
+    #     answer=student.GPA
+    course=enrollment.query.filter(enrollment.netid==netid)
+    return render_template("adminStudentINFO.html",student=student,course=course)
 
 
 @app.route("/adminStudentEdit/<netid>")
 def adminStudentEdit(netid):
     student = people.query.get_or_404(netid)
 
-    #Gets the info from the selected course
+    #Gets the info from the selected student
     if request.method == 'POST':
         student.firstName=request.form["firstName"]
         student.lastName=request.form["lastName"]
@@ -161,7 +186,7 @@ def adminStudentEdit(netid):
             return 'There was an issue updating the students information'
 
     else:
-        return render_template('adminStudentEdit.html', netid=netid)
+        return render_template('adminStudentEdit.html', student=student)
 
 ##Admin Add Course
 @app.route("/adminADD",methods=['POST','GET'])
@@ -227,7 +252,6 @@ def adminEDIT(CRN):
 
 
 ##Remove course
-##Need to add like if more less than 1/3 then can't remove
 @app.route("/adminREMOVE/<CRN>")
 def adminREMOVE(CRN):
     classes = courses.query.get_or_404(CRN)
@@ -239,9 +263,22 @@ def adminREMOVE(CRN):
         return 'There was a problem deleting that course'
 
 ##Info On courses
-@app.route("/adminINFO")
-def adminINFO():
-    return render_template("infoCourses.html")
+@app.route("/adminCourseINFO/<CRN>")
+def adminCourseINFO(CRN):
+    if (request.method=="POST"):
+        content=request.form.get("content")
+
+        if content=='1' :
+            classes= db.session.query(sum(enrollment.netid)).filter(enrollment.CRN==CRN)
+        else:
+            classes = courses.query.filter.func.max(people.GPA).join(enrollment, enrollment.netid == people.netid, isouter=False).filter(enrollment.CRN==CRN).scalar()
+        return render_template("adminCourseINFO.html",classes=classes)
+   
+    else: 
+    #     #do like select all   
+        classes = 0
+        return render_template("adminCourseINFO.html",classes=classes)
+   
 
 
 
