@@ -3,15 +3,15 @@
 {%block name%}Course Info{%endblock%}
 {%block content%}
 
-  <form action="#" method="POST">
+  <form action="adminCourseINFO.html" method="POST">
     <fieldset>
         <legend>Queries</legend>
           <label for="content">Choose a Query for students in this class</label>
             <select id="content" name="content" form="content">
                 <option value="1">Sum of Students in this class</option>
-                <option value="average">(Average GPA of Students<2)</option>
-                <option value="max">(Max GPA of Students<2)</option>
-                <option value="min">(Min GPA of Students<3)</option>
+                <option value="average">Average GPA of Students</option>
+                <option value="max">Max GPA of Students</option>
+                <option value="min">Min GPA of Students</option>
                 <option value="mean">Mean GPA of Students</option>
                 <option value="std">Standard Deviation of Students' GPA</option>
             </select>
