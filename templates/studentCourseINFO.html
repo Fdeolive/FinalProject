@@ -6,18 +6,8 @@
   <form action="#" method="POST">
     <fieldset>
         <legend>Queries</legend>
-        <!-- <select class="form-select" aria-label="Default select example" id="content" name="content">
-            <option selected>Select which you would like to query</option>
-            <option value="(courses.maxEnrollment > courses.enrollment)">Still has seats opened</option>
-            <option value="1">(Professor rating<2)</option>
-            <option value="2">(Professor rating<2)</option>
-            <option value="3">(Professor rating<3)</option>
-            <option value="4">(Prof`essor rating<4)</option>
-            <option value="(courses.weekday = MWF)">Monday, Wednesday,Friday</option>
-            <option value="(courses.weekday = TThur)">Tuesday and Thursday </option>
-          </select> -->
           <label for="content">Choose a query:</label>
-            <select id="content" name="content" form="content">
+            <select id="content" name="answer" form="content">
                 <option value="(courses.maxEnrollment > courses.enrollment)">Still has seats opened</option>
                 <option value=1>(Professor rating>3)</option>
                 <option value=2>(Professor rating>3.5)</option>
@@ -53,4 +43,5 @@
         </tr>
         {% endfor %}
 </table>
+{{content}}
 {%endblock%}

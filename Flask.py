@@ -89,7 +89,7 @@ def login():
    
 
 ########################################### STUDENT PAGE################################################
-##Student section will be find job that so and so
+
 @app.route("/student/<netid>")
 def student(netid):
     ##Getting all the courses enrolled in
@@ -104,16 +104,15 @@ def student(netid):
     results = db.session.query(courses.CRN,courses.courseTitle).join(enrollment, enrollment.CRN == courses.CRN, isouter=False).filter_by(netid=netid).all()
     return render_template("student.html",netid=netid,results=results)
 
-# @app.route("/studentCourseEDIT")
-# def studentCourseEDIT():
-#     return render_template("studentCourseEDIT.html")
+
 
 ################Students information#############
 @app.route("/studentCourseINFO",methods=['POST','GET'])
 def studentCourseINFO():
 
      if (request.method=="POST"):
-        content=request.form["content"]
+        ###Figure this out the/Form content
+        content=request.form.get("answer")
         if (content==1 or content==2 or content==3 or content ==4):
             if(content==1):
                                 classes= db.session.query(people.netid,courses.profid,courses.courseTitle,courses.maxEnrollment,courses.enrollment,courses.weekDays,courses.startTime,courses.endTime,courses.CRN).join(courses, courses.profid == people.netid, isouter=False).filter(people.rating>3).all()
@@ -122,16 +121,18 @@ def studentCourseINFO():
             if(content==3):
                                classes= db.session.query(people.netid,courses.profid,courses.courseTitle,courses.maxEnrollment,courses.enrollment,courses.weekDays,courses.startTime,courses.endTime,courses.CRN).join(courses, courses.profid == people.netid, isouter=False).filter(people.rating>4).all()
             if(content==4):
-                classes= db.session.query(people.netid,courses.profid,courses.courseTitle,courses.maxEnrollment,courses.enrollment,courses.weekDays,courses.startTime,courses.endTime,courses.CRN).join(courses, courses.profid == people.netid, isouter=False).filter(people.rating>4.5).all()
+              classes= db.session.query(people.netid,courses.profid,courses.courseTitle,courses.maxEnrollment,courses.enrollment,courses.weekDays,courses.startTime,courses.endTime,courses.CRN).join(courses, courses.profid == people.netid, isouter=False).filter(people.rating>4.5).all()
         else:
-            classes = courses.query.filter(content)
-           
-        return render_template("studentCourseINFO.html",classes=classes)
+            #classes = courses.query.filter(content)
+            classes= db.session.query(people.netid,courses.profid,courses.courseTitle,courses.maxEnrollment,courses.enrollment,courses.weekDays,courses.startTime,courses.endTime,courses.CRN).join(courses, courses.profid == people.netid, isouter=False).filter(people.rating>4.5).all()
+
+        return render_template("studentCourseINFO.html",classes=classes,content=content)
    
      else: 
-    #     #do like select all   
+   
         classes = courses.query.all()
-        return render_template("studentCourseINFO.html",classes=classes)
+        content=0
+        return render_template("studentCourseINFO.html",classes=classes,content=content)
 
 @app.route("/studentCourseREMOVE/<CRN>")
 def studentCourseREMOVE (CRN):
@@ -265,18 +266,19 @@ def adminREMOVE(CRN):
 ##Info On courses
 @app.route("/adminCourseINFO/<CRN>")
 def adminCourseINFO(CRN):
+    ###Figure out how to display on the screen
     if (request.method=="POST"):
         content=request.form.get("content")
 
         if content=='1' :
-            classes= db.session.query(sum(enrollment.netid)).filter(enrollment.CRN==CRN)
+            answers= db.session.query(sum(enrollment.netid)).filter(enrollment.CRN==CRN)
         else:
-            classes = courses.query.filter.func.max(people.GPA).join(enrollment, enrollment.netid == people.netid, isouter=False).filter(enrollment.CRN==CRN).scalar()
-        return render_template("adminCourseINFO.html",classes=classes,CRN=CRN)
+            answers= courses.query.filter.func.max(people.GPA).join(enrollment, enrollment.netid == people.netid, isouter=False).filter(enrollment.CRN==CRN).scalar()
+        return render_template("adminCourseINFOANSWER.html",answers=answers)
    
     else:  
-        classes = 0
-        return render_template("adminCourseINFO.html",classes=classes,CRN=CRN)
+        classes= courses.query.get_or_404(CRN)
+        return render_template("adminCourseINFO.html",classes=classes)
    
 
 
