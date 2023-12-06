@@ -3,21 +3,23 @@
 {%block name%}Course Info{%endblock%}
 {%block content%}
 
-  <form action="#" method="POST">
-    <fieldset>
-        <legend>Queries</legend>
-          <label for="content">Choose a query:</label>
-            <select id="content" name="content" form="content">
-                <option value="(courses.maxEnrollment > courses.enrollment)">Still has seats opened</option>
-                <option value=1>(Professor rating>3)</option>
-                <option value=2>(Professor rating>3.5)</option>
-                <option value=3>(Professor rating>4)</option>
-                <option value=4>(Professor rating>4.5)</option>
-                <option value="(courses.weekDays == 'MWF')">Monday, Wednesday,Friday</option>
-                <option value="(courses.weekDays == 'TTh')">Tuesday and Thursday </option>
+ <!--The format for my form:https://stackoverflow.com/questions/32019733/getting-value-from-select-tag-using-flask -->
+<form class="form-inline" action="#" method="POST">
+  <div class="form-group">
+    <div class="input-group">
+        <span class="input-group-addon">Please select</span>
+            <select name="lstAnswer" class="selectpicker form-control">
+              <option value="7">Still has seats opened</option>
+              <option value="1">(Professor rating>3)</option>
+              <option value="2">(Professor rating>3.5)</option>
+              <option value="3">(Professor rating>4)</option>
+              <option value="4">(Professor rating>4.5)</option>
+              <option value="5">Monday, Wednesday,Friday</option>
+              <option value="6">Tuesday and Thursday </option>                                        
             </select>
-          <input type="submit" name="btnSubmit">
-    </fieldset>
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+  </div>
 </form>
 
 <table>

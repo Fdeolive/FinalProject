@@ -3,20 +3,22 @@
 {%block name%}Course Info{%endblock%}
 {%block content%}
 
-  <form method="POST">
-    <fieldset>
-        <legend>Queries</legend>
-          <label for="content">Choose a Query for students in this class</label>
-            <select id="content" name="content" form="content">
-                <option value="1">Sum of Students in this class</option>
-                <option value="2">Average GPA of Students</option>
-                <option value="3">Max GPA of Students</option>
-                <option value="4">Min GPA of Students</option>
-                <option value="5">Mean GPA of Students</option>
-                <option value="6">Standard Deviation of Students' GPA</option>
+<!--The format for my form:https://stackoverflow.com/questions/32019733/getting-value-from-select-tag-using-flask -->
+<form class="form-inline" action="#" method="POST">
+  <div class="form-group">
+    <div class="input-group">
+        <span class="input-group-addon">Please select</span>
+            <select name="math" class="selectpicker form-control">
+              <option value="1">Sum of Students in this class</option>
+              <option value="2">Average GPA of Students</option>
+              <option value="3">Max GPA of Students</option>
+              <option value="4">Min GPA of Students</option>
+              <option value="5">Mean GPA of Students</option>
+              <option value="6">Standard Deviation of Students' GPA</option>                                 
             </select>
-          <input type="submit" name="btnSubmit">
-    </fieldset>
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+  </div>
 </form>
 
 {{answer}}
