@@ -265,7 +265,7 @@ def adminREMOVE(CRN):
         return 'There was a problem deleting that course'
 
 ##Info On courses
-@app.route("/adminCourseINFO/<CRN>")
+@app.route("/adminCourseINFO/<CRN>", methods=['GET','POST'])
 def adminCourseINFO(CRN):
     ###Figure out how to display on the screen
     if (request.method=="POST"):
