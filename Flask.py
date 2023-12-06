@@ -113,16 +113,17 @@ def studentCourseINFO():
 
      if (request.method=="POST"):
         ###Figure this out the/Form content
-        content=request.form.get("answer")
+        content=request.args.get("content")
+        print(content)
         if (content==1 or content==2 or content==3 or content ==4):
             if(content==1):
-                                classes= db.session.query(people.netid,courses.profid,courses.courseTitle,courses.maxEnrollment,courses.enrollment,courses.weekDays,courses.startTime,courses.endTime,courses.CRN).join(courses, courses.profid == people.netid, isouter=False).filter(people.rating>3).all()
+                    classes= db.session.query(people.netid,courses.profid,courses.courseTitle,courses.maxEnrollment,courses.enrollment,courses.weekDays,courses.startTime,courses.endTime,courses.CRN).join(courses, courses.profid == people.netid, isouter=False).filter(people.rating>3).all()
             if(content==2):
-                              classes= db.session.query(people.netid,courses.profid,courses.courseTitle,courses.maxEnrollment,courses.enrollment,courses.weekDays,courses.startTime,courses.endTime,courses.CRN).join(courses, courses.profid == people.netid, isouter=False).filter(people.rating>3.5).all()
+                    classes= db.session.query(people.netid,courses.profid,courses.courseTitle,courses.maxEnrollment,courses.enrollment,courses.weekDays,courses.startTime,courses.endTime,courses.CRN).join(courses, courses.profid == people.netid, isouter=False).filter(people.rating>3.5).all()
             if(content==3):
-                               classes= db.session.query(people.netid,courses.profid,courses.courseTitle,courses.maxEnrollment,courses.enrollment,courses.weekDays,courses.startTime,courses.endTime,courses.CRN).join(courses, courses.profid == people.netid, isouter=False).filter(people.rating>4).all()
+                    classes= db.session.query(people.netid,courses.profid,courses.courseTitle,courses.maxEnrollment,courses.enrollment,courses.weekDays,courses.startTime,courses.endTime,courses.CRN).join(courses, courses.profid == people.netid, isouter=False).filter(people.rating>4).all()
             if(content==4):
-              classes= db.session.query(people.netid,courses.profid,courses.courseTitle,courses.maxEnrollment,courses.enrollment,courses.weekDays,courses.startTime,courses.endTime,courses.CRN).join(courses, courses.profid == people.netid, isouter=False).filter(people.rating>4.5).all()
+                    classes= db.session.query(people.netid,courses.profid,courses.courseTitle,courses.maxEnrollment,courses.enrollment,courses.weekDays,courses.startTime,courses.endTime,courses.CRN).join(courses, courses.profid == people.netid, isouter=False).filter(people.rating>4.5).all()
         else:
             #classes = courses.query.filter(content)
             classes= db.session.query(people.netid,courses.profid,courses.courseTitle,courses.maxEnrollment,courses.enrollment,courses.weekDays,courses.startTime,courses.endTime,courses.CRN).join(courses, courses.profid == people.netid, isouter=False).filter(people.rating>4.5).all()
@@ -271,15 +272,30 @@ def adminCourseINFO(CRN):
     if (request.method=="POST"):
         content=request.form.get("content")
 
-        if content=='1' :
-            answers= db.session.query(sum(enrollment.netid)).filter(enrollment.CRN==CRN)
+        if content=='1':
+            answers= db.session.query(db.func.sum(enrollment.netid)).filter(enrollment.CRN==CRN)
+
+        elif content=='2':    
+            answer=db.session.query(db.func.avg(people.GPA)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
+        
+        elif content=='3':    
+            answer=db.session.query(db.func.max(people.GPA)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
+        elif content=='4':    
+            answer=db.session.query(db.func.min(people.GPA)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
+        
+        elif content=='5':    
+            answer=db.session.query(db.func.mean(people.GPA)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
+        
+        elif content=='6':    
+            answer=db.session.query(db.func.stddev(people.GPA)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
+        
         else:
-            answers= courses.query.func.max(people.GPA).join(enrollment, enrollment.netid == people.netid, isouter=False).filter(enrollment.CRN==CRN).scalar()
-        return render_template("adminCourseINFOAnswer.html",answers=answers)
+            answer=0
+        return render_template("adminCourseINFO.html",answer=answer)
    
     else:  
-        classes= courses.query.get_or_404(CRN)
-        return render_template("adminCourseINFO.html",classes=classes)
+       answer=0
+       return render_template("adminCourseINFO.html",answer=answer)
    
 
 
