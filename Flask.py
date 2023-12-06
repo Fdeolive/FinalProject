@@ -294,7 +294,7 @@ def adminCourseINFO(CRN):
    
     else:  
        answer=0
-    return render_template("adminCourseINFO.html",answer=answer)
+       return render_template("adminCourseINFO.html",answer=answer)
    
 
 
