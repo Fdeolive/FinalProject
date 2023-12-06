@@ -271,9 +271,11 @@ def adminCourseINFO(CRN):
     ###Figure out how to display on the screen
     if (request.method=="POST"):
         content=request.form.get("content")
+        
+        print(content)
 
         if content=='1':
-            answers= db.session.query(db.func.sum(enrollment.netid)).filter(enrollment.CRN==CRN)
+            answer= db.session.query(db.func.sum(enrollment.netid)).filter(enrollment.CRN==CRN)
 
         elif content=='2':    
             answer=db.session.query(db.func.avg(people.GPA)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
@@ -291,13 +293,11 @@ def adminCourseINFO(CRN):
         
         else:
             answer=0
-        return render_template("adminCourseINFO.html",answer=answer)
+        return render_template("adminCourseINFO.html",answer=answer, CRN=CRN)
    
     else:  
        answer=0
-       return render_template("adminCourseINFO.html",answer=answer)
-   
-
+       return render_template("adminCourseINFO.html",answer=answer,CRN=CRN)
 
 
 if __name__=="__main__":
