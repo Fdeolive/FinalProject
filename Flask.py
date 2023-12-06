@@ -1,5 +1,6 @@
 from flask import Flask,redirect,url_for,render_template,request
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql.expression import func
 from datetime import datetime
 ##STILL TO DO:
 ###GEt the home nav to work 
@@ -274,8 +275,9 @@ def adminREMOVE(CRN):
 def adminCourseINFO(CRN):
     ###Figure out how to display on the screen
     if (request.method=="POST"):
-        print (request.form)
-        contentAnswer=request.form.get("math")
+        content=request.form.get("math")
+        
+        print(content)
 
         if contentAnswer=='1':
             answers= db.session.query(db.func.sum(enrollment.netid)).filter(enrollment.CRN==CRN).first()
@@ -296,13 +298,11 @@ def adminCourseINFO(CRN):
         
         else:
             answer=0
-        return render_template("adminCourseINFO.html",answer=answer)
+        return render_template("adminCourseINFO.html",answer=answer, CRN=CRN)
    
     else:  
        answer=0
-       return render_template("adminCourseINFO.html",answer=answer)
-   
-
+       return render_template("adminCourseINFO.html",answer=answer,CRN=CRN)
 
 
 if __name__=="__main__":
