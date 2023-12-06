@@ -3,21 +3,21 @@
 {%block name%}Course Info{%endblock%}
 {%block content%}
 
-  <form action="/adminCoourseINFO/{{classes.CNR}}" method="POST">
+  <form  method="POST">
     <fieldset>
         <legend>Queries</legend>
           <label for="content">Choose a Query for students in this class</label>
             <select id="content" name="content" form="content">
                 <option value="1">Sum of Students in this class</option>
-                <option value="average">Average GPA of Students</option>
-                <option value="max">Max GPA of Students</option>
-                <option value="min">Min GPA of Students</option>
-                <option value="mean">Mean GPA of Students</option>
-                <option value="std">Standard Deviation of Students' GPA</option>
+                <option value="2">Average GPA of Students</option>
+                <option value="3">Max GPA of Students</option>
+                <option value="4">Min GPA of Students</option>
+                <option value="5">Mean GPA of Students</option>
+                <option value="6">Standard Deviation of Students' GPA</option>
             </select>
           <input type="submit" name="btnSubmit">
     </fieldset>
 </form>
 
-
+{{answer}}
 {%endblock%}
