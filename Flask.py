@@ -146,19 +146,19 @@ def studentCourseINFO():
         content=0
         return render_template("studentCourseINFO.html",classes=classes,content=content)
 
-@app.route("/studentCourseREMOVE/<netid>",methods=['POST','GET'])
-def studentCourseREMOVE (netid):
-    if request.method=='POST':
-        code=request.form["CRN"]
-        enroll = enrollment.query.filter(enrollment.netid==netid).filter(enrollment.CRN==code)
-        print(enroll)
+@app.route("/studentCourseREMOVE/<CRN>/<netid>",methods=['POST','GET'])
+def studentCourseREMOVE (CRN,netid):
+   
+        enroll = enrollment.query.filter_by(netid=netid,CRN=CRN).first()
+
         try:
             db.session.delete(enroll)
             db.session.commit()
             #return render_template('studentCourseEDIT.html',netid=netid)
             return redirect(url_for('student'),netid=netid)
         except:
-            return 'There was a problem deleting that course'
+            results = db.session.query(courses.CRN,courses.courseTitle).join(enrollment, enrollment.CRN == courses.CRN, isouter=False).filter_by(netid=netid).all()
+            return render_template("student.html",netid=netid,results=results)
     
 
 
