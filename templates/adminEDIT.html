@@ -20,8 +20,14 @@
     <label for="courseSection">Course Section A-Z</label>
     <input type="text" name="courseSection" value="{{course.courseSection}}"><br>
 
-    <label for="weekDay">Class Days</label>
-    <input type="text" name="weekDays" value="{{course.weekDays}}"><br>
+    <span class="input-group-addon">Please select</span>
+            <select name="weekDays" class="selectpicker form-control" value="{{course.weekDays}}">
+              <option value="1">Monday Wednesday Friday</option>
+              <option value="2">Tuesday Thursday</option>                                 
+    </select>
+
+    <!-- <label for="weekDay">Class Days</label>
+    <input type="text" name="weekDays" value="{{course.weekDays}}"><br> -->
 
     <label for="startTime">Start Time</label>
     <input type="text" name="startTime" value="{{course.startTime}}"><br>

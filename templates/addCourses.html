@@ -73,8 +73,14 @@
         <label for="courseSection">Course Section A-Z</label>
         <input type="text" name="courseSection"><br>
 
-        <label for="weekDay">Class Days</label>
-        <input type="text" name="weekDay"><br>
+        <!-- <label for="weekDay">Class Days</label>
+        <input type="text" name="weekDay"><br> -->
+
+        <span class="input-group-addon">Day of Week</span>
+            <select name="weekDays" class="selectpicker form-control" >
+              <option value="1">Monday Wednesday Friday</option>
+              <option value="2">Tuesday Thursday</option>                                 
+    </select>
 
         <label for="startTime">Start Time</label>
         <input type="text" name="startTime"><br>

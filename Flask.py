@@ -3,14 +3,12 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.expression import func
 from datetime import datetime
 from sqlalchemy import or_
-##EDIT Admin
-##ADMIn edit
-##Fix Remove
+
 ##Get STD/Mean to work
 ##GRAPH
-##Add drop downs
 
-##Student add
+
+
 
 
 ##Creating the flask 
@@ -235,12 +233,16 @@ def adminADD():
         classCode=request.form["classCode"]
         maxE=request.form["maxEnrollment"]
         courseSection=request.form["courseSection"]
-        weekDay=request.form["weekDay"]
+        days=request.form.get("weekDays")
+        if days=="1":
+            weekDays="MWF"
+        else:
+            weekDays="TTh"
         startTime=request.form["startTime"]
         endTime=request.form["endTime"]
         profid=request.form["profid"]
         ##Adds to the database 
-        newCOURSE=courses(CRN=CRN,classCode=classCode,maxEnrollment=maxE,enrollment="0",courseTitle=courseTitle,courseSection=courseSection,weekDays=weekDay,startTime=startTime,endTime=endTime,profid=profid)
+        newCOURSE=courses(CRN=CRN,classCode=classCode,maxEnrollment=maxE,enrollment="0",courseTitle=courseTitle,courseSection=courseSection,weekDays=weekDays,startTime=startTime,endTime=endTime,profid=profid)
         db.session.add(newCOURSE)
         db.session.commit()
         return redirect (url_for('adminCourse'))
@@ -270,7 +272,12 @@ def adminEDIT(CRN):
         course.classCode=request.form["classCode"]
         course.maxE=request.form["maxEnrollment"]
         course.courseSection=request.form["courseSection"]
-        course.weekDays=request.form["weekDays"]
+        weekDays=request.form.get("weekDays")
+        if weekDays=="1":
+            course.weekDays="MWF"
+        else:
+            course.weekDays="TTh"
+        
         course.startTime=request.form["startTime"]
         course.endTime=request.form["endTime"]
         course.profid=request.form["profid"]
@@ -304,10 +311,10 @@ def adminCourseINFO(CRN):
     if (request.method=="POST"):
         content=request.form.get("math")
         
-        print(content)
+        
 
         if content=='1':
-            answers= db.session.query(db.func.sum(enrollment.netid)).filter(enrollment.CRN==CRN).first()
+            answer= db.session.query(db.func.sum(enrollment.netid)).filter(enrollment.CRN==CRN).first()
 
         elif content=='2':    
             answer=db.session.query(db.func.avg(people.gpa)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
@@ -318,7 +325,7 @@ def adminCourseINFO(CRN):
             answer=db.session.query(db.func.min(people.gpa)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
         
         elif content=='5':    
-            answer=db.session.query(db.func.stddev(people.gpa)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
+            answer=db.session.query(db.func.stddev_pop(people.gpa)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).scalar()
         
         else:
             answer=0
