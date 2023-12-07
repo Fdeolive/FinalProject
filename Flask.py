@@ -2,11 +2,13 @@ from flask import Flask,redirect,url_for,render_template,request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.expression import func
 from datetime import datetime
-##STILL TO DO:
-###GEt the home nav to work 
-###Add the info page on student and admin
-######Need to include graphs
-##Do CSS
+##EDIT Admin
+##ADMIn edit
+##Fix Remove
+##Get STD/Mean to work
+##GRAPH
+
+##Student add
 
 
 ##Creating the flask 
@@ -107,9 +109,7 @@ def student(netid):
 
 
 
-################Students information#############
-
-#---------------------------------------------------------------------------------------------------#
+##Students information###
 @app.route("/studentCourseINFO",methods=['POST','GET'])
 def studentCourseINFO():
 
@@ -129,13 +129,14 @@ def studentCourseINFO():
         elif(content=="5"):
             classes = courses.query.filter(courses.weekDays == 'MWF')
         elif(content=="6"):
-            classes = courses.query.filter(courses.weekDays == 'TTH')    
+            classes = courses.query.filter(courses.weekDays == 'TTh')    
         elif(content=="7"):
             classes = courses.query.filter(courses.maxEnrollment > courses.enrollment)   
             
         return render_template("studentCourseINFO.html",classes=classes,content=content)
    
      else: 
+        
    
         classes = courses.query.all()
         content=0
@@ -197,25 +198,25 @@ def adminStudentEdit(netid):
         return render_template('adminStudentEdit.html', student=student)
 
 ##Admin Add Course
+#Admin Add Course
 @app.route("/adminADD",methods=['POST','GET'])
 def adminADD():
     
     if request.method=='POST':
         
-        ##Get from the form
-        courseTitle=request.form["courseTitle"]
-        CRN=request.form["CRN"]
-        classCode=request.form["classCode"]
-        maxE=request.form["maxEnrollment"]
-        courseSection=request.form["courseSection"]
-        weekDay=request.form["weekDay"]
-        startTime=request.form["startTime"]
-        endTime=request.form["endTime"]
-        profid=request.form["profid"]
-
-
+        # ##Get from the form
+        # courseTitle=request.form["courseTitle"]
+        # CRN=request.form["CRN"]
+        # classCode=request.form["classCode"]
+        # maxE=request.form["maxEnrollment"]
+        # courseSection=request.form["courseSection"]
+        # weekDay=request.form["weekDay"]
+        # startTime=request.form["startTime"]
+        # endTime=request.form["endTime"]
+        # profid=request.form["profid"]
         ##Adds to the database 
-        newCOURSE=courses(CRN=CRN,classCode=classCode,maxEnrollment=maxE,enrollment="0",courseTitle=courseTitle,courseSection=courseSection,weekDays=weekDay,startTime=startTime,endTime=endTime,profid=profid)
+        newCOURSE=courses(CRN="0",classCode="0",maxEnrollment="0",enrollment="0",courseTitle="0",courseSection="0",weekDays="0",startTime="0",endTime="0",profid="0")
+        #newCOURSE=courses(CRN=CRN,classCode=classCode,maxEnrollment=maxE,enrollment="0",courseTitle=courseTitle,courseSection=courseSection,weekDays=weekDay,startTime=startTime,endTime=endTime,profid=profid)
         db.session.add(newCOURSE)
         db.session.commit()
         return render_template("addCourses.html")
@@ -250,7 +251,7 @@ def adminEDIT(CRN):
 
         try:
             db.session.commit()
-            return redirect(url_for("adminCourse"))
+            return redirect(url_for("adminCourses"))
         
         except:
             return 'There was an issue updating your course'
@@ -279,21 +280,18 @@ def adminCourseINFO(CRN):
         
         print(content)
 
-        if contentAnswer=='1':
+        if content=='1':
             answers= db.session.query(db.func.sum(enrollment.netid)).filter(enrollment.CRN==CRN).first()
 
-        elif contentAnswer=='2':    
+        elif content=='2':    
             answer=db.session.query(db.func.avg(people.GPA)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
         
-        elif contentAnswer=='3':    
+        elif content=='3':    
             answer=db.session.query(db.func.max(people.GPA)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
-        elif contentAnswer=='4':    
+        elif content=='4':    
             answer=db.session.query(db.func.min(people.GPA)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
         
-        elif contentAnswer=='5':    
-            answer=db.session.query(db.func.mean(people.GPA)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
-        
-        elif contentAnswer=='6':    
+        elif content=='5':    
             answer=db.session.query(db.func.stddev(people.GPA)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
         
         else:

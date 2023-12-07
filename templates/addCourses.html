@@ -3,7 +3,7 @@
 {%block name%}Add Courses{%endblock%}
 {%block content%}
 
-<form action="#" method="POST">
+<form method="POST">
     <div class="mb-3">
       <label for="courseTitle" class="form-label">Course Name</label>
       <input type="text" class="form-control" id="courseTitle" required >
@@ -24,7 +24,7 @@
         <label for="section" class="form-label">Section A-Z</label>
         <input type="text" class="form-control" id="section" required >
       </div>
-      
+      <!-- Make this drop dpwn for MWF,TT -->
       <div class="mb-3">
         <label for="weekDay" class="form-label">Week Day</label>
         <select id="weekDay" class="form-select" required>
@@ -50,3 +50,4 @@
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
   {%endblock%}
+   

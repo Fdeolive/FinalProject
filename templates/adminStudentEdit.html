@@ -5,8 +5,8 @@
 <div class="content">
     <h1 style="text-align: center">Edit Student</h1>
 
-    <div class="form">
-        <form action="/adminStudentEdit/{{student.netid}}" method="POST">
+    <!-- <div class="form">
+        <form action="#" method="POST">
             <input type="text" name="firstName" id="firstName" value="{{student.firstName}}">
             <input type="text" name="lastName" id="lastName" value="{{student.lastName}}">
             <input type="text" name="hold" id="hold" value="{{student.hold}}">
@@ -14,5 +14,26 @@
             <input type="submit" value="Update">
         </form>
     </div>
-</div>
+</div> -->
+<form class="form-inline" action="" method="POST">
+    <div class="form-group">
+      <div class="input-group">
+        <input type="text" name="firstName" id="firstName" value="{{student.firstName}}">
+      </div>
+
+      <div class="input-group">
+        <input type="text" name="lastName" id="lastName" value="{{student.lastName}}">
+      </div>
+
+      <div class="input-group">
+        <input type="text" name="hold" id="hold" value="{{student.hold}}">
+      </div>
+      <div class="input-group">
+        <input type="text" name="gpa" id="gpa" value="{{student.GPA}}">
+      </div>
+      
+
+      <button type="submit" class="btn btn-default">Submit</button>
+    </div>
+  </form>
 {%endblock%}
