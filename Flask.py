@@ -151,7 +151,7 @@ def studentCourseREMOVE (netid):
     if request.method=='POST':
         code=request.form["CRN"]
         enroll = enrollment.query.filter(enrollment.netid==netid).filter(enrollment.CRN==code)
-        print(enroll.net)
+        print(enroll)
         try:
             db.session.delete(enroll)
             db.session.commit()
