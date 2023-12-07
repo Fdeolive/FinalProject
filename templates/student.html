@@ -13,27 +13,26 @@
             <td>{{ i.courseTitle }}</td>
             <td>
                 <br>
-                <a href="/studentCourseREMOVE/{{i.CRN}}">Delete</a>
+                <a href="{{ url_for('studentCourseREMOVE',netid=netid) }}">Delete</a>
             </td>
         </tr>
         {% endfor %}
 </table>
 
-<!-- <div class="form">
-    <form action="#" method="POST">
-        <input type="text" name="newCourse" id="newCourse">
-        <input type="submit" value="Add Course">
-    </form>
-</div>
-</div> -->
 
-<form class="form-inline" method="POST">
-    <div class="form-group">
-      <div class="input-group">
-        <input type="text" name="newCourse" id="newCourse">
-      </div>
-      <button type="submit" class="btn btn-default">Submit</button>
-    </div>
-  </form>
+<form action="{{ url_for('student', netid=netid) }}" method="post">
+    <label for="CRN">CRN:</label>
+    <input type="text" name="CRN" required><br>
+
+    <button type="submit">Save Changes</button>
+</form>
+
+<p>Delete</p>
+<form action="{{ url_for('studentCourseREMOVE',netid="{{ netid }}")}}" method="post">
+    <label for="CRN">CRN:</label>
+    <input type="text" name="CRN" required><br>
+
+    <button type="submit">Save Changes</button>
+</form>
 
 {%endblock%}

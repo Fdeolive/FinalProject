@@ -2,19 +2,38 @@
 {%block title%}Edit Courses{%endblock%}
 {%block name%}Edit Courses{%endblock%}
 {%block content%}
-<div class="content">
-    <div class="form">
-        <form action="/adminEDIT/{{course.CNR}}" method="POST">
-            <input type="text" name="courseTitle" id="courseTitle" value="{{course.courseTitle}}">
-            <input type="text" name="maxEnrollment" id="maxEnrollment" value="{{course.maxEnrollment}}">
-            <input type="text" name="classCode" id="courseTitle" value="{{course.classCode}}">
-            <input type="text" name="weekDay" id="weekDay" value="{{course.weekDays}}">
-            <input type="text" name="courseSection" id="courseSection" value="{{course.courseSection}}">
-            <input type="text" name="profid" id="profid" value="{{course.profid}}">
-            <input type="text" name="startTime" id="startTime" value="{{course.startTime}}">
-            <input type="text" name="endTime" id="endTime" value="{{course.endTime}}">
-            <input type="submit" value="Update">
-        </form>
-    </div>
-</div>
+
+
+
+<form action="{{ url_for('adminEDIT', CRN=course.CRN) }}" method="post">
+
+   
+    <label for="classCode">class Code</label>
+    <input type="text" name="classCode" value="{{course.classCode}}"><br>
+
+    <label for="maxEnrollment">Max Enrollment</label>
+    <input type="text" name="maxEnrollment" value="{{course.maxEnrollment}}"><br>
+
+    <label for="courseTitle">Course Title</label>
+    <input type="text" name="courseTitle" value="{{course.courseTitle}}"><br>
+
+    <label for="courseSection">Course Section A-Z</label>
+    <input type="text" name="courseSection" value="{{course.courseSection}}"><br>
+
+    <label for="weekDay">Class Days</label>
+    <input type="text" name="weekDays" value="{{course.weekDays}}"><br>
+
+    <label for="startTime">Start Time</label>
+    <input type="text" name="startTime" value="{{course.startTime}}"><br>
+
+    <label for="endTime">End Time</label>
+    <input type="text" name="endTime" value="{{course.endTime}}"><br>
+
+    <label for="profid">Professor </label>
+    <input type="text" name="profid" value="{{course.profid}}"><br>
+
+    <button type="submit">Save</button>
+</form>
+
+
 {%endblock%}

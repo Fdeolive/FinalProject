@@ -3,7 +3,7 @@
 {%block name%}Add Courses{%endblock%}
 {%block content%}
 
-<form method="POST">
+<!-- <form action="/adminADD"  method="POST">
     <div class="mb-3">
       <label for="courseTitle" class="form-label">Course Name</label>
       <input type="text" class="form-control" id="courseTitle" required >
@@ -24,7 +24,7 @@
         <label for="section" class="form-label">Section A-Z</label>
         <input type="text" class="form-control" id="section" required >
       </div>
-      <!-- Make this drop dpwn for MWF,TT -->
+     
       <div class="mb-3">
         <label for="weekDay" class="form-label">Week Day</label>
         <select id="weekDay" class="form-select" required>
@@ -33,12 +33,12 @@
             <option>Tuesday,Thursday</option>
         </select>
       </div>
-      <!--  -->
+     
       <div class="mb-3">
         <label for="startTime" class="form-label">Start Time</label>
         <input type="text" class="form-control" id="startTime" required>
       </div>
-      <!--  -->
+     
       <div class="mb-3">
         <label for="endTime" class="form-label">End Time</label>
         <input type="text" class="form-control" id="endTime" required >
@@ -49,5 +49,44 @@
       </div>
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
-  {%endblock%}
+   -->
+  
    
+  
+
+    <h1>Add Course</h1>
+
+    <form action="{{ url_for('adminADD') }}" method="post">
+
+        <label for="CRN">CRN</label>
+        <input type="text" name="CRN"><br>
+
+        <label for="classCode">class Code</label>
+        <input type="text" name="classCode"><br>
+
+        <label for="maxEnrollment">Max Enrollment</label>
+        <input type="text" name="maxEnrollment"><br>
+
+        <label for="courseTitle">Course Title</label>
+        <input type="text" name="courseTitle"><br>
+
+        <label for="courseSection">Course Section A-Z</label>
+        <input type="text" name="courseSection"><br>
+
+        <label for="weekDay">Class Days</label>
+        <input type="text" name="weekDay"><br>
+
+        <label for="startTime">Start Time</label>
+        <input type="text" name="startTime"><br>
+
+        <label for="endTime">End Time</label>
+        <input type="text" name="endTime"><br>
+
+        <label for="profid">Professor </label>
+        <input type="text" name="profid"><br>
+
+        <button type="submit">Save</button>
+    </form>
+
+  
+{%endblock%}

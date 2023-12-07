@@ -2,11 +2,13 @@ from flask import Flask,redirect,url_for,render_template,request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.expression import func
 from datetime import datetime
+from sqlalchemy import or_
 ##EDIT Admin
 ##ADMIn edit
 ##Fix Remove
 ##Get STD/Mean to work
 ##GRAPH
+##Add drop downs
 
 ##Student add
 
@@ -32,7 +34,7 @@ class people(db.Model):
      hold=db.Column(db.String(200),nullable=False)
      type=db.Column(db.String(200),nullable=False)
      rating=db.Column(db.String(200),nullable=True)
-     GPA=db.Column(db.String(200),nullable=True)
+     gpa=db.Column(db.String(200),nullable=True)
      netid=db.Column(db.String(200),primary_key=True)
 
      def __repr__(self):
@@ -54,7 +56,6 @@ class courses(db.Model):
         return '<CRN %r>' % self.CRN
 
 class enrollment(db.Model):
-   #  ID=db.Column(db.Integer,primary_key=True)
      CRN=db.Column(db.String(200),primary_key=True)
      netid=db.Column(db.String(200),primary_key=True)
 
@@ -93,12 +94,13 @@ def login():
 
 ########################################### STUDENT PAGE################################################
 
-@app.route("/student/<netid>")
+@app.route("/student/<netid>",methods=['POST','GET'])
 def student(netid):
     ##Getting all the courses enrolled in
    if(request.method=='POST'):
-       newCode=request.form["newCourse"]
-       newCourse=enrollment(netid,CRN=newCode)
+       newCode=request.form["CRN"]
+       print(newCode)
+       newCourse=enrollment(CRN=newCode,netid=netid)
        db.session.add(newCourse)
        db.session.commit()
        results = db.session.query(courses.CRN,courses.courseTitle).join(enrollment, enrollment.CRN == courses.CRN, isouter=False).filter_by(netid=netid).all()
@@ -106,6 +108,8 @@ def student(netid):
    else:
     results = db.session.query(courses.CRN,courses.courseTitle).join(enrollment, enrollment.CRN == courses.CRN, isouter=False).filter_by(netid=netid).all()
     return render_template("student.html",netid=netid,results=results)
+
+##For admin to search students
 
 
 
@@ -142,32 +146,52 @@ def studentCourseINFO():
         content=0
         return render_template("studentCourseINFO.html",classes=classes,content=content)
 
-@app.route("/studentCourseREMOVE/<CRN>")
-def studentCourseREMOVE (CRN):
-    enroll = enrollment.query.get_or_404(CRN)
-    try:
-        db.session.delete(enroll)
-        db.session.commit()
-        return render_template('studentCourseEDIT.html')
-    except:
-        return 'There was a problem deleting that course'
+@app.route("/studentCourseREMOVE/<netid>",methods=['POST','GET'])
+def studentCourseREMOVE (netid):
+    if request.method=='POST':
+        code=request.form["CRN"]
+        enroll = enrollment.query.filter(enrollment.netid==netid).filter(enrollment.CRN==code)
+        print(enroll)
+        try:
+            db.session.delete(enroll)
+            db.session.commit()
+            #return render_template('studentCourseEDIT.html',netid=netid)
+            return redirect(url_for('student'),netid=netid)
+        except:
+            return 'There was a problem deleting that course'
     
 
 
 ################################ADMIN PAGE#####################################################
 
-@app.route("/admin/<name>")
+@app.route("/admin/<name>",methods=['POST','GET'])
 def admin(name):
     return render_template("admin.html",name=name)
 
 
-@app.route("/adminStudent")
+@app.route("/adminStudent",methods=['POST','GET'])
 def adminStudent():
-    student = people.query.filter_by(type="S").all()
+   
+    if request.method=='POST':
+        word=request.form("search")
+        student =people.query.filter((people.netid.like(f"%{word}%"))).filter_by(type="S").all()
+    else:
+         student = people.query.filter_by(type="S").all()
+
     return render_template('adminStudent.html', student=student)
 
+# @app.route("/search_student", methods=['POST','GET'])
+# def search_student():
+#     if request.method=='POST':
+#         word=request.form("search")
+#         people1 =people.query.filter(or_(people.netid.like(f"%{word}%"))).all()
+#     else:    
+#        people1=people.query.all()
+#     return render_template('adminStudent.html',people=people1)
+
+
 #Admin edit of student
-@app.route("/adminStudentINFO/<netid>")
+@app.route("/adminStudentINFO/<netid>",methods=['POST','GET'])
 def adminStudentInfo(netid):
     student = people.query.get_or_404(netid)
     # if request.method=='POST':
@@ -176,17 +200,18 @@ def adminStudentInfo(netid):
     return render_template("adminStudentINFO.html",student=student,course=course)
 
 
-@app.route("/adminStudentEdit/<netid>")
+@app.route("/adminStudentEdit/<netid>",methods=['POST','GET'])
 def adminStudentEdit(netid):
-    student = people.query.get_or_404(netid)
+    student = people.query.filter(people.netid==netid).first()
 
+    print(student)
     #Gets the info from the selected student
     if request.method == 'POST':
         student.firstName=request.form["firstName"]
         student.lastName=request.form["lastName"]
         student.hold=request.form["hold"]
-        student.GPA=request.form["gpa"]
-
+        student.gpa=request.form["gpa"]
+        
         try:
             db.session.commit()
             return redirect(url_for("adminStudent"))
@@ -205,53 +230,54 @@ def adminADD():
     if request.method=='POST':
         
         # ##Get from the form
-        # courseTitle=request.form["courseTitle"]
-        # CRN=request.form["CRN"]
-        # classCode=request.form["classCode"]
-        # maxE=request.form["maxEnrollment"]
-        # courseSection=request.form["courseSection"]
-        # weekDay=request.form["weekDay"]
-        # startTime=request.form["startTime"]
-        # endTime=request.form["endTime"]
-        # profid=request.form["profid"]
+        courseTitle=request.form["courseTitle"]
+        CRN=request.form["CRN"]
+        classCode=request.form["classCode"]
+        maxE=request.form["maxEnrollment"]
+        courseSection=request.form["courseSection"]
+        weekDay=request.form["weekDay"]
+        startTime=request.form["startTime"]
+        endTime=request.form["endTime"]
+        profid=request.form["profid"]
         ##Adds to the database 
-        newCOURSE=courses(CRN="0",classCode="0",maxEnrollment="0",enrollment="0",courseTitle="0",courseSection="0",weekDays="0",startTime="0",endTime="0",profid="0")
-        #newCOURSE=courses(CRN=CRN,classCode=classCode,maxEnrollment=maxE,enrollment="0",courseTitle=courseTitle,courseSection=courseSection,weekDays=weekDay,startTime=startTime,endTime=endTime,profid=profid)
+        newCOURSE=courses(CRN=CRN,classCode=classCode,maxEnrollment=maxE,enrollment="0",courseTitle=courseTitle,courseSection=courseSection,weekDays=weekDay,startTime=startTime,endTime=endTime,profid=profid)
         db.session.add(newCOURSE)
         db.session.commit()
-        return render_template("addCourses.html")
+        return redirect (url_for('adminCourse'))
     else:
         return render_template("addCourses.html")
 
 
 ##Displays all the course
-@app.route("/adminCourses")
+@app.route("/adminCourses",methods=['POST','GET'])
 def adminCourse():
     course = courses.query.all()
     return render_template('adminCourse.html', course=course)
 
 
 ##Admin edit course
-@app.route("/adminEDIT/<CRN>")
+@app.route("/adminEDIT/<CRN>",methods=['POST','GET'])
 def adminEDIT(CRN):
-    course = courses.query.get_or_404(CRN)
+    #course = courses.query.get_or_404(CRN)
+    course=courses.query.filter_by(CRN=CRN).first()
 
     #Gets the info from the selected course
     if request.method == 'POST':
+        
         course.courseTitle=request.form["courseTitle"]
         course.CRN=course.CRN
         course.enrollment=course.enrollment
         course.classCode=request.form["classCode"]
         course.maxE=request.form["maxEnrollment"]
         course.courseSection=request.form["courseSection"]
-        course.weekDay=request.form["weekDay"]
+        course.weekDays=request.form["weekDays"]
         course.startTime=request.form["startTime"]
         course.endTime=request.form["endTime"]
         course.profid=request.form["profid"]
 
         try:
             db.session.commit()
-            return redirect(url_for("adminCourses"))
+            return redirect (url_for('adminCourse'))
         
         except:
             return 'There was an issue updating your course'
@@ -261,13 +287,13 @@ def adminEDIT(CRN):
 
 
 ##Remove course
-@app.route("/adminREMOVE/<CRN>")
+@app.route("/adminREMOVE/<CRN>",methods=['POST','GET'])
 def adminREMOVE(CRN):
     classes = courses.query.get_or_404(CRN)
     try:
         db.session.delete(classes)
         db.session.commit()
-        return render_template('adminCourse.html')
+        return redirect (url_for('adminCourse'))
     except:
         return 'There was a problem deleting that course'
 
@@ -284,15 +310,15 @@ def adminCourseINFO(CRN):
             answers= db.session.query(db.func.sum(enrollment.netid)).filter(enrollment.CRN==CRN).first()
 
         elif content=='2':    
-            answer=db.session.query(db.func.avg(people.GPA)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
+            answer=db.session.query(db.func.avg(people.gpa)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
         
         elif content=='3':    
-            answer=db.session.query(db.func.max(people.GPA)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
+            answer=db.session.query(db.func.max(people.gpa)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
         elif content=='4':    
-            answer=db.session.query(db.func.min(people.GPA)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
+            answer=db.session.query(db.func.min(people.gpa)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
         
         elif content=='5':    
-            answer=db.session.query(db.func.stddev(people.GPA)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
+            answer=db.session.query(db.func.stddev(people.gpa)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
         
         else:
             answer=0
