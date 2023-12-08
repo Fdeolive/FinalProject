@@ -314,7 +314,7 @@ def adminCourseINFO(CRN):
         
 
         if content=='1':
-            answer= db.session.query(db.func.sum(enrollment.netid)).filter(enrollment.CRN==CRN).first()
+            answer= db.session.query(db.func.count(enrollment.netid)).filter(enrollment.CRN==CRN).first()
 
         elif content=='2':    
             answer=db.session.query(db.func.avg(people.gpa)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
