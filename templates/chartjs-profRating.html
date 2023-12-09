@@ -1,20 +1,15 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
+ 
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title%}{%endblock%}</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <style>
-      .btn-default {
-        background-color: lightblue;
-        border-radius: .1em;
-        border-color: gray;
-        border-radius: 2px;
-      }
-    </style>
-  </head>
-  <body>
+    <title>Enrollment Chart</title>
+</head>
+ 
+<body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
           <a class="navbar-brand" href="#"></a>
@@ -54,9 +49,58 @@
           </div>
         </div>
       </nav>
-    <h1{{content}}></h1>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
    <h1> {%block name%}{%endblock%}</h1>
     {%block content%}{%endblock%}
+        <!-- SOURCE FOR CHARTJS: https://www.geeksforgeeks.org/how-to-add-graphs-to-flask-apps/-->
+
+    <div style="height: 60vh; width: 60%;">
+        <canvas id="myChart"></canvas>
+    </div>
+ 
+    <script>
+        const labels = {{ labels | tojson}};
+ 
+        const data = {
+            labels: labels,
+            datasets: [{
+                label: 'Ratings',
+                backgroundColor: 'rgb(55, 105, 75)',
+                borderColor: 'rgb(55, 105, 75)',
+                data: {{ data | tojson}},
+            }]
+            
+        };
+
+       
+        const config = {
+            type: 'bar',
+            data: data,
+            options: { 
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        scaleLabel: {
+                            display:true,
+                            labelString: 'Test'
+                        }
+                    }
+                } 
+            },
+            
+           
+        };
+ 
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            
+            config
+        );
+ 
+    </script>
+    
 </body>
+</html>
+    
 </html>

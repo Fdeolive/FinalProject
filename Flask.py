@@ -3,7 +3,20 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.expression import func
 from datetime import datetime
 from sqlalchemy import or_
+from sqlalchemy import select
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+from sqlalchemy import column, Integer
+import sqlite3 
+import matplotlib.pyplot as plt
+import numpy as np
 
+
+
+import math
+import statistics
+engine = create_engine("sqlite:///CS2990_Final_Project.db")
+gpa_column = column("gpa",Integer)
 ##Get STD/Mean to work
 ##GRAPH
 
@@ -257,6 +270,84 @@ def adminCourse():
     return render_template('adminCourse.html', course=course)
 
 
+
+##Displays graphs of course statistics
+@app.route("/adminGraphEnroll",methods=['POST','GET'])
+def adminGraphEnroll():
+    conn = sqlite3.connect('CS2990_Final_Project.db')
+    cur = conn.cursor()
+    cur.execute("SELECT count(*), courseTitle FROM enrollment JOIN courses ON enrollment.CRN = courses.CRN GROUP BY courseTitle ORDER BY count(*)")
+    enrollment = cur.fetchall()
+    enroll_data = []
+    course_titles = []
+    num_classes = 0
+    x_axis = []
+    for row in enrollment:
+        enroll_data.append(row[0])
+    for row in enrollment:
+        course_titles.append(row[1])
+        x_axis.append(num_classes)
+        num_classes += 1
+    
+    labels = course_titles
+    data = enroll_data
+
+    conn.commit()
+    conn.close()
+    return render_template(template_name_or_list='chartjs-enroll.html',data=data, labels=labels)
+
+##Displays graphs of course statistics
+@app.route("/adminGraphGPA",methods=['POST','GET'])
+def adminGraphGPA():
+    conn = sqlite3.connect('CS2990_Final_Project.db')
+    cur = conn.cursor()
+
+    cur.execute("SELECT AVG(people.gpa), courseTitle FROM courses JOIN enrollment ON courses.CRN = enrollment.CRN JOIN people on enrollment.netid = people.netid GROUP BY courseTitle ORDER BY people.gpa ")
+    gpas = cur.fetchall()
+    gpa_data = []
+    course_titles = []
+    num_classes = 1
+    x_axis = []
+    for row in gpas:
+        gpa_data.append(row[0])
+        x_axis.append(num_classes)
+        num_classes += 1
+    for row in gpas:
+        course_titles.append(row[1])
+    labels = course_titles
+    data = gpa_data
+    
+    conn.commit()
+    conn.close()
+    return render_template(template_name_or_list='chartjs-gpa.html',data=data, labels=labels)
+    
+
+##Displays graphs of course statistics
+@app.route("/adminGraphRating",methods=['POST','GET'])
+def adminGraphRating():
+    conn = sqlite3.connect('CS2990_Final_Project.db')
+    cur = conn.cursor()
+
+    cur.execute("SELECT AVG(people.rating), courseTitle FROM courses JOIN people on courses.profid = people.netid GROUP BY courseTitle ORDER BY people.rating ")
+    ratings = cur.fetchall()
+    rating_data = []
+    course_titles = []
+    num_classes = 1
+    x_axis = []
+    for row in ratings:
+        rating_data.append(row[0])
+        x_axis.append(num_classes)
+        num_classes += 1
+    for row in ratings:
+        course_titles.append(row[1])
+    labels = course_titles
+    data = rating_data
+
+    conn.commit()
+    conn.close()
+    return render_template(template_name_or_list='chartjs-profRating.html',data=data, labels=labels)
+    
+
 ##Admin edit course
 @app.route("/adminEDIT/<CRN>",methods=['POST','GET'])
 def adminEDIT(CRN):
@@ -314,19 +405,31 @@ def adminCourseINFO(CRN):
         
 
         if content=='1':
-            answer= db.session.query(db.func.count(enrollment.netid)).filter(enrollment.CRN==CRN).first()
+            answer= db.session.query(db.func.count(enrollment.netid)).filter(enrollment.CRN==CRN).scalar()
 
         elif content=='2':    
-            answer=db.session.query(db.func.avg(people.gpa)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
+            answer=db.session.query(db.func.avg(people.gpa)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).scalar()
         
         elif content=='3':    
-            answer=db.session.query(db.func.max(people.gpa)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
+            answer=db.session.query(db.func.max(people.gpa)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).scalar()
         elif content=='4':    
-            answer=db.session.query(db.func.min(people.gpa)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).first()
+            answer=db.session.query(db.func.min(people.gpa)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).scalar()
         
         elif content=='5':    
-            answer=db.session.query(db.func.stddev_pop(people.gpa)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).scalar()
-        
+            mean = db.session.query(db.func.avg(people.gpa)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).scalar()
+            size = db.session.query(db.func.count(people.gpa)).join(enrollment, enrollment.netid == people.netid).filter(enrollment.CRN==CRN).scalar()
+            
+            conn = sqlite3.connect('CS2990_Final_Project.db')
+            cur = conn.cursor()
+            cur.execute(f"SELECT people.gpa from people JOIN enrollment on people.netid = enrollment.netid WHERE enrollment.CRN = '{CRN}'")
+            gpas = cur.fetchall()
+            summation = 0
+            for gpa in gpas:
+                summation += (gpa[0] - mean) * (gpa[0] - mean)
+            std_dev = math.sqrt(summation / size * 1.0)
+            conn.commit()
+            conn.close()
+            answer = std_dev
         else:
             answer=0
         return render_template("adminCourseINFO.html",answer=answer, CRN=CRN)
